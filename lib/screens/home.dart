@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 import '../components/header.dart';
+import '../services/transport.dart';
 
 class Home extends StatefulWidget {
+  final Transport transport;
+
+  Home(this.transport);
+
   createState() {
-    return HomeState();
+    return HomeState(transport);
   }
 }
 
 class HomeState extends State<Home> {
-  int counter = 0;
+    int       counter = 0;
+    final Transport transport;
+
+    HomeState(this.transport);
+
+    void testFetch() {
+      transport.request('/');
+    }
 
     @override
     Widget build(BuildContext context) {
@@ -16,11 +28,7 @@ class HomeState extends State<Home> {
         appBar: Header(),
         body: Text('$counter'),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              counter++;
-            });
-          },
+          onPressed: testFetch,
           child: Icon(Icons.add)
         ),
       );

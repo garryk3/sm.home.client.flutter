@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../screens/home.dart';
+import '../screens/login.dart';
 import '../services/service-locator.dart';
 import '../services/transport.dart';
+import '../enums/service-names.dart';
 
 class Application extends StatelessWidget {
-  ServiceLocator services;
-  Transport transport;
 
   Application() {
-    services = new ServiceLocator();
-    services.setService(ServiceNames.Transport, new Transport());
-    transport = services.getService(ServiceNames.Transport);
+    ServiceLocator.setService(ServiceNames.Transport, new Transport());
   }
 
   @override
@@ -19,7 +17,10 @@ class Application extends StatelessWidget {
     return MaterialApp(
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) {
-          return Home(transport);
+          return LoginScreen();
+        },
+        '/home': (BuildContext context) {
+          return HomeScreen();
         }
       }
     );

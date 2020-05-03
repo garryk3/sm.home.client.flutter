@@ -1,24 +1,31 @@
-import 'package:http/http.dart' as http;
+// import 'dart:io';
+import 'package:http/http.dart';
+
 import '../enums/http.dart';
+import '../models/http-response.dart';
 import './config.dart';
 
 class Transport {
-  String host = config['transport']['host'];
+  String url = config['transport']['host'];
 
   Transport();
   Transport.fromConfig(Map<String, String> config) {
     if(config.containsKey('host')) {
-      host = config['host'];
+      url = config['host'];
     }
   }
 
-  void request(HttpMethods method, String path, params) {
-    switch (method) {
-      case HttpMethods.Post: {
-        break;
-      }
-      case HttpMethods.Get:
-      default: {}
+  Future<HttpResponse> request(String method, String path, [params]) async {
+    final Uri fullUrl = Uri.parse("$url/$path");
+    final HttpResponse httpResponse = new HttpResponse();
+    print('request path: $fullUrl');
+
+    try {
+      final response = await get(fullUrl);
+      httpResponse.setSuccessResponse(response);
+    } catch(error) {
+      httpResponse.setError(error);
     }
+    return httpResponse;
   }
 }

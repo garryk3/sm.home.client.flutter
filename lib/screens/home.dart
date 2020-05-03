@@ -1,32 +1,44 @@
 import 'package:flutter/material.dart';
-import '../components/header.dart';
+
+import '../widgets/header.dart';
+import '../services/service-locator.dart';
 import '../services/transport.dart';
+import '../enums/service-names.dart';
 
-class Home extends StatefulWidget {
-  final Transport transport;
+import '../test-widgets/list.dart';
 
-  Home(this.transport);
+class HomeScreen extends StatefulWidget {
+  HomeScreen();
 
   createState() {
-    return HomeState(transport);
+    return HomeScreenState();
   }
 }
 
-class HomeState extends State<Home> {
-    int       counter = 0;
-    final Transport transport;
+class HomeScreenState extends State<HomeScreen> {
+    int counter = 0;
+    List<String> data = [];
+    final Transport transport = ServiceLocator.getService(ServiceNames.Transport);
 
-    HomeState(this.transport);
+    HomeScreenState();
 
-    void testFetch() {
-      transport.request('/');
+    void testFetch() async {
+      counter++;
+      final response = await transport.request('GET', 'photos/$counter');
+      if(response.hasError()) {
+        print('Error: ' + response.error);
+      }
+      print('response: ${response.body}');
+      setState(() {
+        data.add(response.body['url']);
+      });
     }
 
     @override
     Widget build(BuildContext context) {
       return Scaffold(
         appBar: Header(),
-        body: Text('$counter'),
+        body: ImageList(data),
         floatingActionButton: FloatingActionButton(
           onPressed: testFetch,
           child: Icon(Icons.add)
